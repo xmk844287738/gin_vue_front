@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="register">
     <div>
       <!-- class="mt-5" 样式与导航栏保持一定距离 -->
       <b-row class="mt-5">
@@ -20,23 +20,24 @@
               <b-form-group id="input-group-1" label="手机号:" label-for="input-1">
                 <b-form-input
                   id="input-1"
-                  v-model="user.telephone"
-                  @input="changeInput"
+                  v-model="$v.user.telephone.$model"
+                  :state="validateState('telephone')"
                   type="number"
                   placeholder="请输入你的手机号"
                 ></b-form-input>
-                <b-form-invalid-feedback :state="telephoneValidation">手机号必须为11位！</b-form-invalid-feedback>
-                <b-form-valid-feedback :state="telephoneValidation">手机号符合11位！</b-form-valid-feedback>
+                <b-form-invalid-feedback :state="validateState('telephone')">手机号不符合要求!</b-form-invalid-feedback>
               </b-form-group>
 
               <!-- 密码 -->
               <b-form-group id="input-group-1" label="密码:" label-for="input-1">
                 <b-form-input
                   id="input-1"
-                  v-model="user.password"
+                  v-model="$v.user.password.$model"
+                  :state="validateState('password')"
                   type="password"
                   placeholder="请输入你的密码"
                 ></b-form-input>
+                <b-form-invalid-feedback :state="validateState('password')">密码必须大于6位!</b-form-invalid-feedback>
               </b-form-group>
 
               <b-button type="button" variant="primary" block @click="register()">注册</b-button>
@@ -48,6 +49,11 @@
   </div>
 </template>
 <script>
+import { required, minLength } from 'vuelidate/lib/validators';
+
+// const telephoneValidate = (value) => /^1[3|4|5|7]\d{9}$/.test(value); // 利用正则表达式构建自定义表单验证器
+import custonValidate from '@/helper/customValidate'; // 导入自定义表单验证器
+
 export default {
   data() {
     return {
@@ -56,24 +62,30 @@ export default {
         telephone: '',
         password: '',
       },
-      telephoneValidation: null, // 不进行输入时，不进行表单验证
     };
   },
+  validations: {
+    user: {
+      telephone: {
+        required,
+        telephone: custonValidate.telephoneValidate,
+      },
+      password: {
+        required,
+        minLength: minLength(6),
+      },
+    },
+  },
   methods: {
+    // 管理验证的状态值
+    validateState(name) {
+      const { $dirty, $error } = this.$v.user[name]; // ES结构赋值
+      return $dirty ? !$error : null;
+    },
     register() {
-      if (this.user.telephone.length !== 11) {
-        this.telephoneValidation = false; // 手机号不符合条件
-        return;
-      }
-      this.telephoneValidation = true; // 手机号符合条件
-
       console.log('success register');
     },
 
-    changeInput() {
-      // 使用input设置数据监听来移除上一次验证的结果
-      this.telephoneValidation = null;
-    },
   },
 };
 </script>
