@@ -21,11 +21,12 @@
                 <b-form-input
                   id="input-1"
                   v-model="user.telephone"
-                  @input="changeInput()"
+                  @input="changeInput"
                   type="number"
                   placeholder="请输入你的手机号"
                 ></b-form-input>
-                <b-form-text text-variant="danger" v-if="showTelephoneValidate">手机号必须为11位！</b-form-text>
+                <b-form-invalid-feedback :state="telephoneValidation">手机号必须为11位！</b-form-invalid-feedback>
+                <b-form-valid-feedback :state="telephoneValidation">手机号符合11位！</b-form-valid-feedback>
               </b-form-group>
 
               <!-- 密码 -->
@@ -33,11 +34,9 @@
                 <b-form-input
                   id="input-1"
                   v-model="user.password"
-                  @input="changeInput()"
                   type="password"
                   placeholder="请输入你的密码"
                 ></b-form-input>
-                <b-form-text text-variant="danger" v-if="showPasswordValidate">密码不得少于6位！</b-form-text>
               </b-form-group>
 
               <b-button type="button" variant="primary" block @click="register()">注册</b-button>
@@ -57,27 +56,23 @@ export default {
         telephone: '',
         password: '',
       },
-      showTelephoneValidate: false,
-      showPasswordValidate: false,
+      telephoneValidation: null, // 不进行输入时，不进行表单验证
     };
   },
   methods: {
     register() {
       if (this.user.telephone.length !== 11) {
-        this.showTelephoneValidate = true;
+        this.telephoneValidation = false; // 手机号不符合条件
         return;
       }
-      if (this.user.password.length < 6) {
-        this.showPasswordValidate = true;
-        return;
-      }
+      this.telephoneValidation = true; // 手机号符合条件
+
       console.log('success register');
     },
 
     changeInput() {
       // 使用input设置数据监听来移除上一次验证的结果
-      this.showTelephoneValidate = false;
-      this.showPasswordValidate = false;
+      this.telephoneValidation = null;
     },
   },
 };
