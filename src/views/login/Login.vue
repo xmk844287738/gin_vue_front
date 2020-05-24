@@ -30,7 +30,7 @@
                 <b-form-invalid-feedback :state="validateState('password')">密码必须大于6位!</b-form-invalid-feedback>
               </b-form-group>
 
-              <b-button type="button" variant="primary" block @click="register()">登录</b-button>
+              <b-button type="button" variant="primary" block @click="login()">登录</b-button>
             </b-form>
           </b-card>
         </b-col>
@@ -70,7 +70,44 @@ export default {
       const { $dirty, $error } = this.$v.user[name]; // ES结构赋值
       return $dirty ? !$error : null;
     },
-    register() {
+
+    login() {
+      // 验证表单有无错误
+      this.$v.user.$touch(); // 用户不进行任何数据交互也会触发数据验证错误
+      if (this.$v.user.$anyError) {
+        return; // 有错误则返回
+      }
+      // 验证通过，给后端192.168.233.135:9000发送数据请求
+      const api = 'http://192.168.233.135:9000/api/auto/login';
+      this.axios.post(api, { ...this.user }).then((res) => { // 登录成功时
+        // 利用localStorage保存后端发来得 token
+        localStorage.token = res.data.data.token;
+        // console.log('success');
+        console.log(res.data.status); // 打印登录的状态
+
+        // 以toasts 的方式(提示卡)给出注册成功提示
+        this.$bvToast.toast(res.data.status.success, {
+          title: '恭喜你',
+          variant: 'success', // 提示卡显示的颜色
+          autoHideDelay: 1000, // 提示卡停留的时间
+          toaster: 'b-toaster-top-center', // 提示卡的位置
+          solid: true,
+        });
+
+        // 跳转首页
+        setTimeout(() => { this.$router.replace({ name: 'Home' }); }, 1000);
+      }).catch((err) => { // 登录失败时
+        // console.log('error of: ');
+        console.log(err.response.data); // 查看错误信息
+
+        this.$bvToast.toast(err.response.data.status.error, {
+          title: '登录数据错误',
+          variant: 'danger', // 提示卡显示的颜色
+          autoHideDelay: 5000, // 提示卡停留的时间
+          toaster: 'b-toaster-top-center', // 提示卡的位置
+          solid: true,
+        });
+      });
       console.log('success login');
     },
 
