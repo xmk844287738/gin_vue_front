@@ -7,8 +7,12 @@ const mutations = {
     console.log('moduleA');
   },
 };
+const actions = {
+
+};
 export default {
   namespaced: true,
   state,
   mutations,
+  actions,
 };
