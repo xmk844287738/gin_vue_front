@@ -26,9 +26,10 @@
               <template v-slot:button-content>
                 <em>{{ userInfo.name }}</em>
               </template>
-              <b-dropdown-item href="#">个人主页</b-dropdown-item>
-              <b-dropdown-item href="#">退出</b-dropdown-item>
+              <b-dropdown-item @click="$router.replace({name: 'profile'})">个人主页</b-dropdown-item>
+              <b-dropdown-item @click="logout">退出</b-dropdown-item>
             </b-nav-item-dropdown>
+            <b-nav-item @click="$router.replace({name: 'posts'})">文章</b-nav-item>
             <div v-if=" !userInfo">
               <b-nav-item
                 v-if="$route.name != 'register'"
@@ -44,11 +45,22 @@
 </template>
 <script>
 // import storageService from '@/service/storageService'; // 导入本地缓存服务
+import { mapActions } from 'vuex';
+import store from '@/store';
 
 export default {
   computed: { // 计算属性
     userInfo() {
-      return this.$store.state.userInfo;
+      // return this.$store.state.userModule.userInfo;
+      return store.state.userModule.userInfo;
+    },
+  },
+  methods: {
+    ...mapActions('userModule', { userlogout: 'logout' }),
+    logout() {
+      this.userlogout().then(() => {
+        console.log('user logout success!');
+      });
     },
   },
 };

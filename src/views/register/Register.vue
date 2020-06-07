@@ -53,7 +53,7 @@ import { required, minLength } from 'vuelidate/lib/validators';
 
 // const telephoneValidate = (value) => /^1[3|4|5|7]\d{9}$/.test(value); // 利用正则表达式构建自定义表单验证器
 import custonValidate from '@/helper/customValidate'; // 导入自定义表单验证器
-import userService from '@/service/userService';
+import { mapActions } from 'vuex'; // 导入vuex modules 的actions
 
 export default {
   data() {
@@ -78,6 +78,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions('userModule', { userRegister: 'register' }),
     // 管理验证的状态值
     validateState(name) {
       const { $dirty, $error } = this.$v.user[name]; // ES结构赋值
@@ -90,26 +91,15 @@ export default {
         return; // 有错误则返回
       }
       // 验证通过，给后端192.168.233.135:9000发送数据请求
-      userService.register(this.user).then((res) => { // 注册成功时
-        // 利用localStorage保存后端发来得 token
-        this.$store.commit('SET_TOKEN', res.data.data.token);
-        // storageService.set(storageService.USER_TOKEN, res.data.data.token);
-
-        console.log(res.data.status); // 打印注册的状态
-
+      this.userRegister(this.user).then(() => { // 注册成功时
         // 以toasts 的方式(提示卡)给出注册成功提示
-        this.$bvToast.toast(res.data.status.success, {
+        this.$bvToast.toast('注册成功', {
           title: '恭喜你',
           variant: 'success', // 提示卡显示的颜色
           autoHideDelay: 1000, // 提示卡停留的时间
           toaster: 'b-toaster-top-center', // 提示卡的位置
           solid: true,
         });
-
-        return userService.userInfo(); // 链式调用
-      }).then((response) => {
-        this.$store.commit('SET_USERINFO', response.data.data.user);
-        // storageService.set(storageService.USER_INFO, JSON.stringify(response.data.data.user));
         // 跳转首页
         setTimeout(() => { this.$router.replace({ name: 'Home' }); }, 1000);
       }).catch((err) => { // 注册失败时
