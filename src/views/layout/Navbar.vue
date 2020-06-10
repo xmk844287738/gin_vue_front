@@ -27,9 +27,10 @@
                 <em>{{ userInfo.name }}</em>
               </template>
               <b-dropdown-item @click="$router.replace({name: 'profile'})">个人主页</b-dropdown-item>
+              <b-dropdown-item @click="$router.replace({name: 'editPost'})">我的文章</b-dropdown-item>
               <b-dropdown-item @click="logout">退出</b-dropdown-item>
             </b-nav-item-dropdown>
-            <b-nav-item @click="$router.replace({name: 'posts'})">文章</b-nav-item>
+            <b-nav-item @click="$router.replace({name: 'posts'})">大伙杂谈</b-nav-item>
             <div v-if=" !userInfo">
               <b-nav-item
                 v-if="$route.name != 'register'"
@@ -59,6 +60,8 @@ export default {
     ...mapActions('userModule', { userlogout: 'logout' }),
     logout() {
       this.userlogout().then(() => {
+        // 重新加载登录页面
+        this.$router.replace({ name: 'login' });
         console.log('user logout success!');
       });
     },

@@ -34,7 +34,7 @@ export default {
   mounted() {
     // 查询单篇文章
     // const postId = 'e362971d-1be6-4c80-9404-863398ab7fdc';
-    const postApi = `post/${this.$route.query.postId}`;
+    const postApi = `anonymousUser/post/${this.$route.query.postId}`;
     request.service.get(postApi).then((res) => {
       console.log(res.data.data.post);
       // 渲染文章

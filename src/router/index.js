@@ -21,17 +21,28 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'), // 按需 惰性加载组件
   },
   ...userRouter,
+  // 查询多篇文章
   {
     path: '/posts',
     name: 'posts',
     component: () => import('../views/posts/Posts.vue'), // 按需加载
   },
-  // 单篇文章
+  // 查询单篇文章
   {
     path: '/post',
     name: 'post',
     component: () => import('../views/posts/Post.vue'),
   },
+  // 写文章
+  {
+    path: '/editPost',
+    name: 'editPost',
+    meta: {
+      auth: true, // 开启路由认证
+    },
+    component: () => import('../views/posts/EditPost.vue'),
+  },
+
 ];
 
 const router = new VueRouter({

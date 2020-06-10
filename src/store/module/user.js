@@ -70,9 +70,6 @@ const userModule = {
       context.commit('SET_USERINFO', '');
       // 删除本地userInfo缓存
       storageService.set(storageService.USER_INFO, '');
-
-      // 重新加载登录页面
-      window.location.reload();
     },
   },
 };

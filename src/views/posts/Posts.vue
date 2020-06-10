@@ -43,6 +43,7 @@ export default {
   data() {
     return {
       postsList: [],
+      postNum: 2, // 每次加载的文章数
       offset: 0, // 查询数据库文章数量偏移值
       getPostsOn: true, // 是否启用加载文章的函数
     };
@@ -50,7 +51,7 @@ export default {
   mounted() {
     // 当此组件加载时需要触发的函数
     // 请求后台获取文章数据
-    const postApi = `posts/?postNum=2&offset=${this.offset}`; // 查询多篇文章
+    const postApi = `anonymousUser/posts/?postNum=${this.postNum}&offset=${this.offset}`; // 查询多篇文章
     request.service.get(postApi).then((res) => {
       // 遍历多篇文章数组
       for (let i = 0; i < res.data.data.posts.length; i += 1) {
@@ -67,8 +68,8 @@ export default {
   methods: {
     getPosts() {
       // 请求后台获取文章数据
-      // const postApi = 'http://192.168.233.135:9000/posts/e362971d-1be6-4c80-9404-863398ab7fdc'; // 查询单篇文章
-      const postApi = `posts/?postNum=2&offset=${this.offset}`; // 查询多篇文章
+      // const postApi = 'http://192.168.233.135:9000/anonymousUser/posts/e362971d-1be6-4c80-9404-863398ab7fdc'; // 查询单篇文章
+      const postApi = `anonymousUser/posts/?postNum=${this.postNum}&offset=${this.offset}`; // 查询多篇文章
       request.service.get(postApi).then((res) => {
         // 文章数据赋值前台对象
         // js 列表向末尾添加一个元素使用 push
